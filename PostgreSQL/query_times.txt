@@ -3,3 +3,10 @@
 Zapytania: 5 | Sekwencyjnie: 0.14s | Równolegle: 0.05s
 Zapytania: 10 | Sekwencyjnie: 0.24s | Równolegle: 0.10s
 Zapytania: 100 | Sekwencyjnie: 3.00s | Równolegle: 0.55s
+
+--- TEST ZAPYTAŃ (2025-04-08 22:30:08) ---
+Zapytania: 10 | Sekwencyjnie: 0.30s | Równolegle: 0.07s
+Zapytania: 100 | Sekwencyjnie: 2.98s | Równolegle: 0.61s
+Zapytania: 1000 | Sekwencyjnie: 30.08s | Równolegle: 5.43s
+Zapytania: 10000 | Sekwencyjnie: 286.82s | Równolegle: 54.57s
+Zapytania: 100000 | Sekwencyjnie: 2990.28s | Równolegle: 370.25s
