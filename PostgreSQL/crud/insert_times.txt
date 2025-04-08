@@ -1,0 +1,6 @@
+
+--- WYNIKI TESTU (2025-04-08 20:49:27) ---
+Wstawiono 1000 rekordów w 1.07 sekundy
+Wstawiono 10000 rekordów w 9.88 sekundy
+Wstawiono 100000 rekordów w 97.02 sekundy
+
