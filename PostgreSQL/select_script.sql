@@ -1,88 +1,41 @@
--- 1. Lista wszystkich klientów
-SELECT * FROM Customers;
+SELECT FirstName, LastName FROM Customers;
 
--- 2. Lista wszystkich pracowników
-SELECT * FROM Employees;
+SELECT Name, Price FROM Products
+WHERE Price > 100;
 
--- 3. Lista wszystkich produktów z nazwą kategorii i dostawcy
-SELECT 
-    p.ProductID,
-    p.ProductName,
-    c.CategoryName,
-    s.CompanyName AS SupplierName,
-    p.UnitPrice,
-    p.UnitsInStock
-FROM Products p
-JOIN Categories c ON p.CategoryID = c.CategoryID
-JOIN Suppliers s ON p.SupplierID = s.SupplierID;
-
--- 4. Lista wszystkich zamówień z nazwą klienta i pracownika
-SELECT 
-    o.OrderID,
-    c.CompanyName AS Customer,
-    e.FirstName || ' ' || e.LastName AS Employee,
-    o.OrderDate,
-    o.Freight
-FROM Orders o
-JOIN Customers c ON o.CustomerID = c.CustomerID
-JOIN Employees e ON o.EmployeeID = e.EmployeeID;
-
--- 5. Szczegóły zamówienia (OrderDetails)
-SELECT 
-    od.OrderID,
-    p.ProductName,
-    od.Quantity,
-    od.UnitPrice,
-    od.Discount,
-    (od.UnitPrice * od.Quantity * (1 - od.Discount)) AS Total
-FROM OrderDetails od
-JOIN Products p ON od.ProductID = p.ProductID;
-
--- 6. Ile zamówień złożył każdy klient?
-SELECT 
-    c.CompanyName,
-    COUNT(o.OrderID) AS OrderCount
-FROM Customers c
-LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
-GROUP BY c.CompanyName
-ORDER BY OrderCount DESC;
-
--- 7. Najlepiej sprzedające się produkty
-SELECT 
-    p.ProductName,
-    SUM(od.Quantity) AS TotalSold
-FROM OrderDetails od
-JOIN Products p ON od.ProductID = p.ProductID
-GROUP BY p.ProductName
-ORDER BY TotalSold DESC
+SELECT * FROM Orders
+ORDER BY CreatedAt DESC
 LIMIT 10;
 
--- 8. Wartość sprzedaży wg pracownika
-SELECT 
-    e.FirstName || ' ' || e.LastName AS Employee,
-    SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS TotalSales
+SELECT o.OrderID, c.FirstName, c.LastName, o.TotalAmount
 FROM Orders o
-JOIN Employees e ON o.EmployeeID = e.EmployeeID
-JOIN OrderDetails od ON o.OrderID = od.OrderID
-GROUP BY Employee
-ORDER BY TotalSales DESC;
+JOIN Customers c ON o.CustomerID = c.CustomerID;
 
--- 9. Lista dostawców i liczba ich produktów
-SELECT 
-    s.CompanyName,
-    COUNT(p.ProductID) AS ProductCount
-FROM Suppliers s
-LEFT JOIN Products p ON s.SupplierID = p.SupplierID
-GROUP BY s.CompanyName;
+SELECT o.OrderID, c.Email, o.TotalAmount
+FROM Orders o
+JOIN Customers c ON o.CustomerID = c.CustomerID
+WHERE o.Status = 'delivered'
+ORDER BY o.TotalAmount DESC;
 
--- 10. Średnia wartość zamówienia
-SELECT 
-    ROUND(AVG(total), 2) AS AverageOrderValue
-FROM (
-    SELECT 
-        o.OrderID,
-        SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS total
-    FROM Orders o
-    JOIN OrderDetails od ON o.OrderID = od.OrderID
-    GROUP BY o.OrderID
-) AS order_totals;
+SELECT oi.OrderID, p.Name AS ProductName, oi.Quantity, oi.UnitPrice
+FROM OrderItems oi
+JOIN Products p ON oi.ProductID = p.ProductID
+JOIN Orders o ON oi.OrderID = o.OrderID
+WHERE o.Status = 'shipped';
+
+SELECT c.CustomerID, COUNT(o.OrderID) AS OrderCount, SUM(o.TotalAmount) AS TotalSpent
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.CustomerID
+ORDER BY TotalSpent DESC;
+
+SELECT o.OrderID, c.FirstName || ' ' || c.LastName AS Customer, p.Name AS Product, s.CompanyName AS Shipper, pay.Method
+FROM Orders o
+JOIN Customers c ON o.CustomerID = c.CustomerID
+JOIN OrderItems oi ON o.OrderID = oi.OrderID
+JOIN Products p ON oi.ProductID = p.ProductID
+JOIN Shipments s ON o.OrderID = s.OrderID
+JOIN Payments pay ON o.OrderID = pay.OrderID
+WHERE o.Status IN ('shipped', 'delivered') AND pay.Method = 'card'
+ORDER BY o.CreatedAt DESC
+LIMIT 20;

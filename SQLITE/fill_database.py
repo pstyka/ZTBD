@@ -14,7 +14,7 @@ NUM_ORDERS = 1000000
 BATCH_SIZE = 1000
 
 fake = Faker()
-conn = sqlite3.connect("sqlite.db")  # ścieżka do Twojej bazy SQLite
+conn = sqlite3.connect("sqlite.db")  
 cur = conn.cursor()
 
 def insert_customers():
