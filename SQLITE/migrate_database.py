@@ -8,7 +8,7 @@ POSTGRES_CONFIG = {
     'port': 5432,
     'dbname': 'postgres',
     'user': 'postgres',
-    'password': 'qw12qw'
+    'password': 'postgres'
 }
 
 # Ścieżka do pliku SQLite
